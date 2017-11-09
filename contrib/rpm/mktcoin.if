@@ -1,0 +1,157 @@
+
+## <summary>policy for mktcoin</summary>
+
+
+########################################
+## <summary>
+##	Transition to mktcoin.
+## </summary>
+## <param name="domain">
+## <summary>
+##	Domain allowed to transition.
+## </summary>
+## </param>
+#
+interface(`mktcoin_domtrans',`
+	gen_require(`
+		type mktcoin_t, mktcoin_exec_t;
+	')
+
+	corecmd_search_bin($1)
+	domtrans_pattern($1, mktcoin_exec_t, mktcoin_t)
+')
+
+
+########################################
+## <summary>
+##	Execute mktcoin server in the mktcoin domain.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+#
+interface(`mktcoin_initrc_domtrans',`
+	gen_require(`
+		type mktcoin_initrc_exec_t;
+	')
+
+	init_labeled_script_domtrans($1, mktcoin_initrc_exec_t)
+')
+
+
+########################################
+## <summary>
+##	Search mktcoin lib directories.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+#
+interface(`mktcoin_search_lib',`
+	gen_require(`
+		type mktcoin_var_lib_t;
+	')
+
+	allow $1 mktcoin_var_lib_t:dir search_dir_perms;
+	files_search_var_lib($1)
+')
+
+########################################
+## <summary>
+##	Read mktcoin lib files.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+#
+interface(`mktcoin_read_lib_files',`
+	gen_require(`
+		type mktcoin_var_lib_t;
+	')
+
+	files_search_var_lib($1)
+	read_files_pattern($1, mktcoin_var_lib_t, mktcoin_var_lib_t)
+')
+
+########################################
+## <summary>
+##	Manage mktcoin lib files.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+#
+interface(`mktcoin_manage_lib_files',`
+	gen_require(`
+		type mktcoin_var_lib_t;
+	')
+
+	files_search_var_lib($1)
+	manage_files_pattern($1, mktcoin_var_lib_t, mktcoin_var_lib_t)
+')
+
+########################################
+## <summary>
+##	Manage mktcoin lib directories.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+#
+interface(`mktcoin_manage_lib_dirs',`
+	gen_require(`
+		type mktcoin_var_lib_t;
+	')
+
+	files_search_var_lib($1)
+	manage_dirs_pattern($1, mktcoin_var_lib_t, mktcoin_var_lib_t)
+')
+
+
+########################################
+## <summary>
+##	All of the rules required to administrate
+##	an mktcoin environment
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+## <param name="role">
+##	<summary>
+##	Role allowed access.
+##	</summary>
+## </param>
+## <rolecap/>
+#
+interface(`mktcoin_admin',`
+	gen_require(`
+		type mktcoin_t;
+		type mktcoin_initrc_exec_t;
+		type mktcoin_var_lib_t;
+	')
+
+	allow $1 mktcoin_t:process { ptrace signal_perms };
+	ps_process_pattern($1, mktcoin_t)
+
+	mktcoin_initrc_domtrans($1)
+	domain_system_change_exemption($1)
+	role_transition $2 mktcoin_initrc_exec_t system_r;
+	allow $2 system_r;
+
+	files_search_var_lib($1)
+	admin_pattern($1, mktcoin_var_lib_t)
+
+')
+

@@ -1,0 +1,33 @@
+# /etc/conf.d/mktcoind: config file for /etc/init.d/mktcoind
+
+# Config file location
+#MKTCOIND_CONFIGFILE="/etc/mktcoin/mktcoin.conf"
+
+# What directory to write pidfile to?  (created and owned by $MKTCOIND_USER)
+#MKTCOIND_PIDDIR="/var/run/mktcoind"
+
+# What filename to give the pidfile
+#MKTCOIND_PIDFILE="${MKTCOIND_PIDDIR}/mktcoind.pid"
+
+# Where to write mktcoind data (be mindful that the blockchain is large)
+#MKTCOIND_DATADIR="/var/lib/mktcoind"
+
+# User and group to own mktcoind process
+#MKTCOIND_USER="mktcoin"
+#MKTCOIND_GROUP="mktcoin"
+
+# Path to mktcoind executable
+#MKTCOIND_BIN="/usr/bin/mktcoind"
+
+# Nice value to run mktcoind under
+#MKTCOIND_NICE=0
+
+# Additional options (avoid -conf and -datadir, use flags above)
+MKTCOIND_OPTS="-disablewallet"
+
+# The timeout in seconds OpenRC will wait for mktcoind to terminate
+# after a SIGTERM has been raised.
+# Note that this will be mapped as argument to start-stop-daemon's
+# '--retry' option, which means you can specify a retry schedule
+# here. For more information see man 8 start-stop-daemon.
+MKTCOIND_SIGTERM_TIMEOUT=60

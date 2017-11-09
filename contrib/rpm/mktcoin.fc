@@ -1,0 +1,8 @@
+/usr/bin/mktcoin-cli		--	gen_context(system_u:object_r:mktcoin_exec_t,s0)
+/usr/sbin/mktcoind		--	gen_context(system_u:object_r:mktcoin_exec_t,s0)
+/usr/lib(64)?/mktcoin/mktcoind		--	gen_context(system_u:object_r:mktcoin_exec_t,s0)
+
+/etc/mktcoin(/.*)?		gen_context(system_u:object_r:mktcoin_conf_t,s0)
+/var/lib/mktcoin(/.*)?		gen_context(system_u:object_r:mktcoin_var_lib_t,s0)
+
+(/var)?/run/mktcoind(/.*)?   gen_context(system_u:object_r:mktcoin_var_run_t,s0)

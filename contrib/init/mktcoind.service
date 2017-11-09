@@ -1,0 +1,22 @@
+[Unit]
+Description=MKTcoin's distributed currency daemon
+After=network.target
+
+[Service]
+User=mktcoin
+Group=mktcoin
+
+Type=forking
+PIDFile=/var/lib/mktcoind/mktcoind.pid
+ExecStart=/usr/bin/mktcoind -daemon -pid=/var/lib/mktcoind/mktcoind.pid \
+-conf=/etc/mktcoin/mktcoin.conf -datadir=/var/lib/mktcoind -disablewallet
+
+Restart=always
+PrivateTmp=true
+TimeoutStopSec=60s
+TimeoutStartSec=2s
+StartLimitInterval=120s
+StartLimitBurst=5
+
+[Install]
+WantedBy=multi-user.target
