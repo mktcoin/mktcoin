@@ -1302,6 +1302,71 @@ UniValue getmempoolinfo(const JSONRPCRequest& request)
     return mempoolInfoToJSON();
 }
 
+double GetAverageBlockSpacing (const CBlockIndex * blockindex, const int averagingInterval) {
+
+  if (averagingInterval <= 1) return 0.;
+
+  if (blockindex == NULL) {
+    if (chainActive.Tip() == NULL)
+      return 0.;
+    else
+      blockindex = chainActive.Tip();
+  }
+
+  const CBlockIndex *BlockReading = blockindex;
+  int64_t CountBlocks = 0;
+  int64_t nActualTimespan = 0;
+  int64_t LastBlockTime = 0;
+
+  for (unsigned int i = 1; BlockReading && BlockReading->nHeight > 0; i++) {
+    if (CountBlocks >= averagingInterval) { break; }
+    CountBlocks++;
+    if(LastBlockTime > 0){
+      int64_t Diff = (LastBlockTime - BlockReading->GetBlockTime());
+      nActualTimespan += Diff;
+    }
+    LastBlockTime = BlockReading->GetBlockTime();
+
+    BlockReading = BlockReading->pprev;
+
+  }
+  return ((double)nActualTimespan)/((double)averagingInterval)/60.;
+}
+
+UniValue getblockspacing(const JSONRPCRequest& request)
+{
+    if (request.fHelp)
+        throw runtime_error(
+            "getblockspacing (interval height)\n"
+            "\nReturns details on the block spacing.\n"
+            "\nResult:\n"
+            "{\n"
+            "  \"average block spacing\": xxxxx,               (numeric)\n"
+            "}\n"
+        );
+
+    //LogPrint("rpc", "In getblockspacing params not 0");
+
+    int interval = 24;
+    CBlockIndex * blockindex = NULL;
+
+    if (request.params.size()>0) {
+      interval = request.params[0].get_int();
+      if (request.params.size()>1) {
+	int height = request.params[1].get_int();
+	blockindex = chainActive.Tip();
+	while (blockindex && blockindex->nHeight > height) {
+	  blockindex = blockindex->pprev;
+	}
+      }
+    }    
+
+    UniValue ret(UniValue::VOBJ);
+    ret.push_back(Pair("average block spacing",(double)GetAverageBlockSpacing(blockindex,interval)));
+    return ret;
+    
+}
+
 UniValue preciousblock(const JSONRPCRequest& request)
 {
     if (request.fHelp || request.params.size() != 1)
@@ -1430,6 +1495,7 @@ static const CRPCCommand commands[] =
     { "blockchain",         "getmempooldescendants",  &getmempooldescendants,  true,  {"txid","verbose"} },
     { "blockchain",         "getmempoolentry",        &getmempoolentry,        true,  {"txid"} },
     { "blockchain",         "getmempoolinfo",         &getmempoolinfo,         true,  {} },
+    { "blockchain",         "getblockspacing",        &getblockspacing,        true,  {"interval","height"} },
     { "blockchain",         "getrawmempool",          &getrawmempool,          true,  {"verbose"} },
     { "blockchain",         "gettxout",               &gettxout,               true,  {"txid","n","include_mempool"} },
     { "blockchain",         "gettxoutsetinfo",        &gettxoutsetinfo,        true,  {} },
