@@ -189,7 +189,7 @@ public:
         consensus.nMinimumChainWork = uint256S("0x00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
 
         // By default assume that the signatures in ancestors of this block are valid.
-        consensus.defaultAssumeValid = uint256S("0x0f9188f13cb7b2c71f2a335e3a4fc328bf5beb436012afca590b1a11466e2206"); //genesis
+        //consensus.defaultAssumeValid = uint256S("0x0f9188f13cb7b2c71f2a335e3a4fc328bf5beb436012afca590b1a11466e2206"); //genesis
 
         pchMessageStart[0] = 0x0b;
         pchMessageStart[1] = 0x11;
@@ -198,9 +198,9 @@ public:
         nDefaultPort = 19275;
         nPruneAfterHeight = 1000;
 
-        genesis = CreateGenesisBlock(1296688602, 414098458, 0x1d00ffff, 1, 5000 * COIN);
+        genesis = CreateGenesisBlock(1522342412, 406042, 0x1e0fffff, 1, 5000 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
-        //assert(consensus.hashGenesisBlock == uint256S("0x000000000933ea01ad0ee984209779baaec3ced90fa3f408719526f8d77f4943"));
+        assert(consensus.hashGenesisBlock == uint256S("0x247b208ebeb1ecd60df2c2884fa39c4e13ac17da56efdf0348e036363697ee75"));
         //assert(genesis.hashMerkleRoot == uint256S("0x4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b"));
 
         // nodes with support for servicebits filtering should be at the top
@@ -220,11 +220,13 @@ public:
         fRequireStandard = false;
         fMineBlocksOnDemand = false;
 
-
+	/*
         checkpointData = (CCheckpointData) {
             boost::assign::map_list_of
-            ( 0, uint256S("0f9188f13cb7b2c71f2a335e3a4fc328bf5beb436012afca590b1a11466e2206")),
+            ( 0, uint256S("247b208ebeb1ecd60df2c2884fa39c4e13ac17da56efdf0348e036363697ee75")),
         };
+	*/
+
 
         chainTxData = ChainTxData{
             // Data as of block 00000000c2872f8f8a8935c8e3c5862be9038c97d4de2cf37ed496991166928a (height 1063660)
